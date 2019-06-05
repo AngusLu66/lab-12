@@ -1,0 +1,31 @@
+#include "Arduino.h"
+#include "LTimer.h"
+#include "DHT.h"
+#define DHTPIN 2 
+#define DHTTYPE DHT11
+float h;
+float t;
+float f;
+LTimer timer0(LTIMER_0);
+DHT dht(DHTPIN, DHTTYPE);
+void _callback0(void *usr_data)
+{
+  Serial.print(F("Humidity: "));
+  Serial.print(h);
+  Serial.print(F("%  Temperature: "));
+  Serial.print(t);
+  Serial.print(F("¢XC "));
+  Serial.print(f);
+  Serial.print(F("¢XF  Heat index: "));
+}
+void setup()
+{
+  Serial.begin(115200);
+  timer0.begin();
+  timer0.start(1000, LTIMER_REPEAT_MODE, _callback0, NULL);
+}
+void loop() {
+  h = dht.readHumidity();
+  t = dht.readTemperature();
+  f = dht.readTemperature(true);
+}
